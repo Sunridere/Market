@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/v1.0/01-ddl-users.yaml
+  - include:
+      file: db/changelog/v1.0/02-ddl-category.yaml
+  - include:
+      file: db/changelog/v1.0/03-ddl-products.yaml
+  - include:
+      file: db/changelog/v1.0/04-ddl-carts.yaml
+  - include:
+      file: db/changelog/v1.0/05-ddl-cart-items.yaml
+  - include:
+      file: db/changelog/v1.0/06-ddl-orders.yaml
+  - include:
+      file: db/changelog/v1.0/07-ddl-order-items.yaml

@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    activate:
+      on-profile: default
+  datasource:
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: false
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+
+token:
+  signing:
+    key: 160cb622638816e483f9d176c2da814fa71f0cccf2b936d55f46e797c9d1f4d4

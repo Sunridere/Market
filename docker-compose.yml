@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: market-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - market-net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: market-api
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/market-postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    networks:
+      - market-net
+
+volumes:
+  pgdata:
+
+networks:
+  market-net:
+    driver: bridge

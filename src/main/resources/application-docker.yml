@@ -1,0 +1,23 @@
+server:
+  port: ${SERVER_PORT:8087}
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/hakton-postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: false
+  liquibase:
+    enabled: true
+    change-log: classpath:db.changelog/db.changelog-master.yml

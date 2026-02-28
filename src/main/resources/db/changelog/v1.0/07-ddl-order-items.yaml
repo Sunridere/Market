@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-create-order-items
+      author: dev
+      changes:
+        - createTable:
+            tableName: order_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: order_id
+                  type: uuid
+
+              - column:
+                  name: product_id
+                  type: uuid
+
+              - column:
+                  name: quantity
+                  type: integer
+
+              - column:
+                  name: priceAtPurchase
+                  type: decimal(10,2)
+
+        - addUniqueConstraint:
+            tableName: order_items
+            columnNames: order_id, product_id
+            constraintName: uq_order_product
+
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: order_id
+            referencedTableName: orders
+            referencedColumnNames: id
+            constraintName: fk_order_items_order
+
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: product_id
+            referencedTableName: products
+            referencedColumnNames: id
+            constraintName: fk_order_items_product
