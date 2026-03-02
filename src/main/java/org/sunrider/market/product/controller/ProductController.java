@@ -1,7 +1,7 @@
 package org.sunrider.market.product.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -13,18 +13,20 @@ import org.sunrider.market.product.dto.ProductDto;
 import org.sunrider.market.product.service.ProductService;
 
 @RestController
-@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
-@Tag(name = "Работа с продуктами")
+@Tag(name = "Сервис товаров")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductService productService;
 
+    @Operation(summary = "Получение списка товаров")
     @GetMapping()
     public List<ProductDto> getProducts() {
         return productService.getProducts();
     }
 
+    @Operation(summary = "Получение товара по ID")
     @GetMapping("/{id}")
     public ProductDto getProduct(@PathVariable UUID id) {
         return productService.getProductById(id);

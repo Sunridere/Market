@@ -10,7 +10,7 @@ import org.sunrider.market.product.entity.Category;
 @Schema(description = "Информация о продукте")
 public record ProductDto (
 
-    @Schema(description = "ID продукта")
+    @Schema(description = "ID продукта", example = "2b4d24b2-3686-448e-873d-75151d2faf8b")
     UUID id,
 
     @Schema(description = "Название продукта", example = "Iphone 13 PRO")
@@ -19,10 +19,10 @@ public record ProductDto (
     @Schema(description = "Описание продукта", example = "Самый новый смартфон от Apple...")
     String description,
 
-    @Schema(description = "Цена продукта", example = "30_000")
+    @Schema(description = "Цена продукта", example = "30000")
     BigDecimal price,
 
-    @Schema(description = "Количество на складе", example = "12_000")
+    @Schema(description = "Количество на складе", example = "50")
     Integer stockQuantity,
 
     @Schema(description = "Категория продукта", example = "Смартфон")

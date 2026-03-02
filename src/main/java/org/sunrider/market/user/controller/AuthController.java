@@ -14,8 +14,8 @@ import org.sunrider.market.user.dto.SignUpRequest;
 import org.sunrider.market.user.service.AuthenticationService;
 
 @RestController
-@RequestMapping("/auth")
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 @Tag(name = "Аутентификация")
 public class AuthController {
 

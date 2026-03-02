@@ -9,11 +9,11 @@ import lombok.Builder;
 @Schema(description = "Запрос на добавление предмета")
 public record ItemRequestDto(
 
-    @Schema(description = "ID продукта")
+    @Schema(description = "ID продукта", example = "2b4d24b2-3686-448e-873d-75151d2faf8b")
     UUID productId,
 
     @Min(1)
-    @Schema(description = "Количество продукта")
+    @Schema(description = "Количество продукта", example = "3")
     Integer quantity
 
 ) {

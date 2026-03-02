@@ -1,5 +1,7 @@
 package org.sunrider.market.cart.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +22,19 @@ import org.sunrider.market.user.entity.User;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Сервис корзины")
 @RequestMapping("/api/v1/cart")
 public class CartController {
 
     private final CartService cartService;
 
+    @Operation(summary = "Получение корзины пользователя")
     @GetMapping
-    public CartDto cart(@AuthenticationPrincipal User user) {
+    public CartDto getCart(@AuthenticationPrincipal User user) {
         return cartService.getCart(user);
     }
 
+    @Operation(summary = "Добавление товара в корзину")
     @PostMapping("/items")
     public CartDto addItem(
         @AuthenticationPrincipal User user,
@@ -37,6 +42,7 @@ public class CartController {
         return cartService.addItem(user, request);
     }
 
+    @Operation(summary = "Изменение количества товара в корзине")
     @PutMapping("/items/{productId}")
     public CartDto updateItemQuantity(
         @AuthenticationPrincipal User user,
@@ -46,6 +52,7 @@ public class CartController {
         return cartService.updateItemQuantity(user, productId, request);
     }
 
+    @Operation(summary = "Удаление товара из корзины")
     @DeleteMapping("/items/{productId}")
     public CartDto removeItem(
         @AuthenticationPrincipal User user,
@@ -54,6 +61,7 @@ public class CartController {
         return cartService.removeItem(user, productId);
     }
 
+    @Operation(summary = "Удаление всех товаров из корзины")
     @DeleteMapping("/clear")
     public CartDto clearCart(@AuthenticationPrincipal User user) {
         return cartService.clearCart(user);

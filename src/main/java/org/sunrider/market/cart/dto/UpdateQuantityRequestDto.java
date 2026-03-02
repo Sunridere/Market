@@ -9,7 +9,7 @@ public record UpdateQuantityRequestDto(
 
     @NotNull
     @Min(0)
-    @Schema(description = "Новое количество товара (0 — удалить из корзины)")
+    @Schema(description = "Новое количество товара (0 — удалить из корзины)", example = "3")
     Integer quantity
 
 ) {
