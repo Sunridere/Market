@@ -10,7 +10,6 @@ import org.sunrider.market.product.entity.Product;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
 
-    @Mapping(source = "category.name", target = "category")
     ProductDto productToProductDto(Product product);
 
     List<ProductDto> productsToProductDtos(List<Product> products);

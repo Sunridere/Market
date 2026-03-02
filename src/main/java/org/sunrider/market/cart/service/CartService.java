@@ -3,7 +3,6 @@ package org.sunrider.market.cart.service;
 import java.util.ArrayList;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.sunrider.market.cart.dto.CartDto;
@@ -26,18 +25,18 @@ public class CartService {
     private final ProductRepository productRepository;
     private final CartMapper cartMapper;
 
-    public CartDto getCart(UUID id) {
-        return cartMapper.cartToCartDto(cartRepository.findByUserId(id).orElseGet(() -> {
+    public CartDto getCart(User user) {
+        return cartMapper.cartToCartDto(cartRepository.findByUserId(user.getId()).orElseGet(() -> {
             Cart newCart = Cart.builder().build();
             return cartRepository.save(newCart);
         }));
     }
 
     @Transactional
-    public CartDto addItem(UUID id, ItemRequestDto request) {
-        Cart cart = cartRepository.findByUserId(id)
+    public CartDto addItem(User user, ItemRequestDto request) {
+        Cart cart = cartRepository.findByUserId(user.getId())
             .orElseGet(() -> Cart.builder()
-                .user(User.builder().id(id).build())
+                .user(user)
                 .items(new ArrayList<>())
                 .build());
 
@@ -53,8 +52,8 @@ public class CartService {
     }
 
     @Transactional
-    public CartDto updateItemQuantity(UUID userId, UUID productId, UpdateQuantityRequestDto request) {
-        Cart cart = cartRepository.findByUserId(userId)
+    public CartDto updateItemQuantity(User user, UUID productId, UpdateQuantityRequestDto request) {
+        Cart cart = cartRepository.findByUserId(user.getId())
             .orElseThrow(() -> new NotFoundException("Корзина не найдена"));
 
         CartItem cartItem = cart.getItems().stream()
@@ -72,8 +71,8 @@ public class CartService {
     }
 
     @Transactional
-    public CartDto removeItem(UUID userId, UUID productId) {
-        Cart cart = cartRepository.findByUserId(userId)
+    public CartDto removeItem(User user, UUID productId) {
+        Cart cart = cartRepository.findByUserId(user.getId())
             .orElseThrow(() -> new NotFoundException("Корзина не найдена"));
 
         CartItem cartItem = cart.getItems().stream()
@@ -87,11 +86,11 @@ public class CartService {
     }
 
     @Transactional
-    public CartDto clearCart(UUID userId) {
-        Cart cart = cartRepository.findByUserId(userId)
+    public CartDto clearCart(User user) {
+        Cart cart = cartRepository.findByUserId(user.getId())
             .orElseGet(() -> {
                 Cart newCart = Cart.builder()
-                    .user(User.builder().id(userId).build())
+                    .user(user)
                     .items(new ArrayList<>())
                     .build();
                 return cartRepository.save(newCart);

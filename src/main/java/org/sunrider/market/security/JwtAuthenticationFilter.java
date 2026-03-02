@@ -28,13 +28,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(
         @NonNull HttpServletRequest request,
-        @NonNull HttpServletResponse respose,
+        @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException{
 
         var authHeader = request.getHeader(AUTHORIZATION_HEADER);
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
-            filterChain.doFilter(request, respose);
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -63,6 +63,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             }
         }
-        filterChain.doFilter(request, respose);
+        filterChain.doFilter(request, response);
     }
 }

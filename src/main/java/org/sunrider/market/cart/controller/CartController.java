@@ -27,12 +27,14 @@ public class CartController {
 
     @GetMapping
     public CartDto cart(@AuthenticationPrincipal User user) {
-        return cartService.getCart(user.getId());
+        return cartService.getCart(user);
     }
 
     @PostMapping("/items")
-    public CartDto addItem(@AuthenticationPrincipal User user, @RequestBody ItemRequestDto request) {
-        return cartService.addItem(user.getId(), request);
+    public CartDto addItem(
+        @AuthenticationPrincipal User user,
+        @Valid @RequestBody ItemRequestDto request) {
+        return cartService.addItem(user, request);
     }
 
     @PutMapping("/items/{productId}")
@@ -41,7 +43,7 @@ public class CartController {
         @PathVariable UUID productId,
         @Valid @RequestBody UpdateQuantityRequestDto request
     ) {
-        return cartService.updateItemQuantity(user.getId(), productId, request);
+        return cartService.updateItemQuantity(user, productId, request);
     }
 
     @DeleteMapping("/items/{productId}")
@@ -49,11 +51,11 @@ public class CartController {
         @AuthenticationPrincipal User user,
         @PathVariable UUID productId
     ) {
-        return cartService.removeItem(user.getId(), productId);
+        return cartService.removeItem(user, productId);
     }
 
     @DeleteMapping("/clear")
     public CartDto clearCart(@AuthenticationPrincipal User user) {
-        return cartService.clearCart(user.getId());
+        return cartService.clearCart(user);
     }
 }

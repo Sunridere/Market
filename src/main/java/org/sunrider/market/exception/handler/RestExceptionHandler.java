@@ -1,12 +1,12 @@
 package org.sunrider.market.exception.handler;
 
-import org.apache.coyote.BadRequestException;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.sunrider.market.exception.BadRequestException;
 import org.sunrider.market.exception.InternalServerException;
+import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.exception.UnauthorizedException;
 
 @RestControllerAdvice

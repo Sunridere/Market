@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.Builder;
+import org.sunrider.market.product.entity.Category;
 
 @Builder
 @Schema(description = "Информация о продукте")
@@ -25,6 +26,6 @@ public record ProductDto (
     Integer stockQuantity,
 
     @Schema(description = "Категория продукта", example = "Смартфон")
-    String category
+    Category category
 
 ) { }

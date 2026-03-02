@@ -26,7 +26,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductDto getProduct(@PathVariable @Valid UUID id) {
+    public ProductDto getProduct(@PathVariable UUID id) {
         return productService.getProductById(id);
     }
 
