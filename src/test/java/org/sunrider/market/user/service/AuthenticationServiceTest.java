@@ -1,0 +1,87 @@
+package org.sunrider.market.user.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.sunrider.market.security.JwtService;
+import org.sunrider.market.user.dto.JwtAuthenticationResponse;
+import org.sunrider.market.user.dto.SignInRequest;
+import org.sunrider.market.user.dto.SignUpRequest;
+import org.sunrider.market.user.entity.Role;
+import org.sunrider.market.user.entity.User;
+
+@ExtendWith(MockitoExtension.class)
+class AuthenticationServiceTest {
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private JwtService jwtService;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @InjectMocks
+    private AuthenticationService authenticationService;
+
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        user = User.builder()
+            .username("testuser")
+            .email("test@test.com")
+            .password("encodedPassword")
+            .firstName("Test")
+            .lastName("User")
+            .role(Role.ROLE_USER)
+            .build();
+    }
+
+    @Test
+    void signUp_success() {
+        SignUpRequest request = new SignUpRequest("testuser", "test@test.com", "password123", "Test", "User");
+
+        when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
+        when(userService.createUser(any(User.class))).thenReturn(user);
+        when(jwtService.generateToken(any(UserDetails.class))).thenReturn("jwt-token");
+
+        JwtAuthenticationResponse response = authenticationService.signUp(request);
+
+        assertThat(response.token()).isEqualTo("jwt-token");
+        verify(userService).createUser(any(User.class));
+        verify(jwtService).generateToken(any(UserDetails.class));
+    }
+
+    @Test
+    void signIn_success() {
+        SignInRequest request = new SignInRequest("testuser", "password123");
+
+        UserDetailsService userDetailsService = username -> user;
+        when(userService.userDetailsService()).thenReturn(userDetailsService);
+        when(jwtService.generateToken(any(UserDetails.class))).thenReturn("jwt-token");
+
+        JwtAuthenticationResponse response = authenticationService.signIn(request);
+
+        assertThat(response.token()).isEqualTo("jwt-token");
+        verify(authenticationManager).authenticate(any());
+        verify(jwtService).generateToken(any(UserDetails.class));
+    }
+}
