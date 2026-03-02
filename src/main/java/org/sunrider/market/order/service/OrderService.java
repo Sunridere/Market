@@ -22,6 +22,7 @@ import org.sunrider.market.order.entity.OrderStatus;
 import org.sunrider.market.order.mapper.OrderMapper;
 import org.sunrider.market.order.repository.OrderRepository;
 import org.sunrider.market.product.dto.ProductDto;
+import org.sunrider.market.product.entity.Category;
 import org.sunrider.market.product.entity.Product;
 import org.sunrider.market.product.service.ProductService;
 import org.sunrider.market.user.entity.User;
@@ -81,7 +82,10 @@ public class OrderService {
                 .description(productDto.description())
                 .price(productDto.price())
                 .stockQuantity(productDto.stockQuantity() - item.quantity())
-                .category(productDto.category())
+                .category(Category.builder()
+                    .id(productDto.category().id())
+                    .name(productDto.category().name())
+                    .build())
                 .build();
 
             order.getItems().add(OrderItem.builder()

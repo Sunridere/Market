@@ -26,6 +26,6 @@ public record ProductDto (
     Integer stockQuantity,
 
     @Schema(description = "Категория продукта", example = "Смартфон")
-    Category category
+    CategoryDto category
 
 ) { }

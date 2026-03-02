@@ -12,6 +12,7 @@ import org.sunrider.market.cart.entity.Cart;
 import org.sunrider.market.cart.entity.CartItem;
 import org.sunrider.market.cart.mapper.CartMapper;
 import org.sunrider.market.cart.repository.CartRepository;
+import org.sunrider.market.exception.ItemAlreadyInCartException;
 import org.sunrider.market.product.entity.Product;
 import org.sunrider.market.product.repository.ProductRepository;
 import org.sunrider.market.user.entity.User;
@@ -27,7 +28,10 @@ public class CartService {
 
     public CartDto getCart(User user) {
         return cartMapper.cartToCartDto(cartRepository.findByUserId(user.getId()).orElseGet(() -> {
-            Cart newCart = Cart.builder().build();
+            Cart newCart = Cart.builder()
+                .user(user)
+                .items(new ArrayList<>())
+                .build();
             return cartRepository.save(newCart);
         }));
     }
@@ -41,7 +45,15 @@ public class CartService {
                 .build());
 
         Product product = productRepository.findById(request.productId())
-            .orElseThrow(() -> new NotFoundException("Продукт не найден"));
+            .orElseThrow(() -> new NotFoundException("Товар не найден"));
+
+        cart.getItems().stream()
+            .map(c -> c.getProduct().getId())
+            .filter(id -> id.equals(request.productId()))
+            .findFirst()
+            .ifPresent(id -> {
+                throw new ItemAlreadyInCartException("Товар уже в корзине");
+            });
 
         cart.getItems().add(CartItem.builder()
                 .cart(cart)

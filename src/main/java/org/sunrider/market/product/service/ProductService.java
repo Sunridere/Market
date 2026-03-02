@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.product.dto.ProductDto;
 import org.sunrider.market.product.mapper.ProductMapper;
 import org.sunrider.market.product.repository.ProductRepository;
@@ -25,7 +26,8 @@ public class ProductService {
     }
 
     public ProductDto getProductById(UUID id) {
-        return productMapper.productToProductDto(productRepository.findById(id).orElse(null));
+        return productMapper.productToProductDto(productRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Нет товара с ID: " + id)));
     }
 
 }

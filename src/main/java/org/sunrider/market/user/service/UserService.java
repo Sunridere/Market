@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.sunrider.market.exception.NotFoundException;
+import org.sunrider.market.exception.UserAlreadyExistsException;
 import org.sunrider.market.user.entity.Role;
 import org.sunrider.market.user.entity.User;
 import org.sunrider.market.user.repository.UserRepository;
@@ -21,11 +23,11 @@ public class UserService {
     public User createUser(User user) {
 
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Пользователь с таким именем уже существует");
+            throw new UserAlreadyExistsException("Пользователь с таким именем уже существует");
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Пользователь с таким email уже существует");
+            throw new UserAlreadyExistsException("Пользователь с таким email уже существует");
         }
 
         return userRepository.save(user);
@@ -34,7 +36,7 @@ public class UserService {
 
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
-            .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+            .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
     }
 
     public UserDetailsService userDetailsService() {
