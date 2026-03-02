@@ -1,6 +1,7 @@
 package org.sunrider.market.product.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import java.util.UUID;
 import lombok.Builder;
 
@@ -12,6 +13,7 @@ public record CategoryDto(
     UUID id,
 
     @Schema(description = "Название категории", example = "Техника")
+    @NotBlank
     String name
 ) {
 

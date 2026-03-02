@@ -4,11 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
+import java.util.UUID;
 
-@Builder
-@Schema(description = "Запрос на регистрацию")
-public record SignUpRequest(
+public record UserDto (
+
+    @Schema(description = "Id пользователя")
+    UUID id,
 
     @Schema(description = "Никнейм пользователя", example = "Test")
     @Size(min = 5, max = 50, message = "Никнейм пользователя должен содержать от 5 до 50 символов")
@@ -21,16 +22,9 @@ public record SignUpRequest(
     @Email(message = "Email адрес должен быть в формате user@example.com")
     String email,
 
-    @Schema(description = "Пароль", example = "test_password")
-    @Size(max = 255, message = "Длина пароля должна быть не более 255 символов")
-    String password,
-
     @Schema(description = "Имя пользователя", example = "Vitaliy")
     String firstName,
 
     @Schema(description = "Фамилия пользователя", example = "Ribin")
     String lastName
-
-) {
-
-}
+){}

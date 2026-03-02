@@ -12,4 +12,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     Optional<List<Order>> findByUserId(UUID userId);
 
+    Optional<Order> findById(UUID id);
+
 }

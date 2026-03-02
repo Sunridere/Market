@@ -1,13 +1,16 @@
 package org.sunrider.market.user.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.sunrider.market.exception.BadRequestException;
 import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.exception.UserAlreadyExistsException;
+import org.sunrider.market.user.dto.UserDto;
 import org.sunrider.market.user.entity.Role;
 import org.sunrider.market.user.entity.User;
+import org.sunrider.market.user.mapper.UserMapper;
 import org.sunrider.market.user.repository.UserRepository;
 
 @Service
@@ -15,9 +18,19 @@ import org.sunrider.market.user.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public UserDto updateUser(User user, UserDto userDto) {
+
+        if (!user.getId().equals(userDto.id()))
+        {
+            throw new BadRequestException("Неверный ID");
+        }
+
+        user.setFirstName(userDto.firstName());
+        user.setLastName(userDto.lastName());
+
+        return userMapper.toDto(userRepository.save(user));
     }
 
     public User createUser(User user) {
@@ -43,22 +56,12 @@ public class UserService {
         return this::findUserByUsername;
     }
 
-    public User getCurrentUser() {
-        // Получение имени пользователя из контекста Spring Security
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return findUserByUsername(username);
+    public UserDto getCurrentUser(User user) {
+        return userMapper.toDto(userRepository.findById(user.getId())
+            .orElseThrow(() -> new NotFoundException("Такого пользователя не существует")));
     }
 
-    /**
-     * Выдача прав администратора текущему пользователю
-     * <p>
-     * Нужен для демонстрации
-     */
-    @Deprecated
-    public void getAdmin() {
-        var user = getCurrentUser();
-        user.setRole(Role.ADMIN);
-        saveUser(user);
+    public List<UserDto> getAllUsers() {
+        return userMapper.toDtos(userRepository.findAll());
     }
-
 }

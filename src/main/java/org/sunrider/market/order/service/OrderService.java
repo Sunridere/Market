@@ -105,6 +105,17 @@ public class OrderService {
             .orElseThrow(() -> new NotFoundException("У пользователя нет заказов.")));
     }
 
+    public OrderDto getOrder(UUID userID, UUID orderID) {
+        Order order = orderRepository.findById(orderID)
+            .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+
+        if (!order.getUser().getId().equals(userID)) {
+            throw new NotFoundException("Заказ не найден");
+        }
+
+        return orderMapper.toDto(order);
+    }
+
 
 
 }

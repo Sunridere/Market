@@ -5,8 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.sunrider.market.product.dto.ProductDto;
@@ -30,6 +33,14 @@ public class ProductController {
     @GetMapping("/{id}")
     public ProductDto getProduct(@PathVariable UUID id) {
         return productService.getProductById(id);
+    }
+
+
+    @Operation(summary = "Создание нового товара (Админ)")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ProductDto createProduct(@RequestBody ProductDto productDto) {
+        return productService.createProduct(productDto);
     }
 
 }

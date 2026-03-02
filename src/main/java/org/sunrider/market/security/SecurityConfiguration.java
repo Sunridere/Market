@@ -44,9 +44,8 @@ public class SecurityConfiguration {
             // Настройка доступа к конечным точкам
             .authorizeHttpRequests(request -> request
                 // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
-                .requestMatchers("/auth/**", "/api/v1/products/**").permitAll()
+                .requestMatchers("/auth/**", "/api/v1/products/**",  "/api/v1/categories/**").permitAll()
                 .requestMatchers( "/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider())

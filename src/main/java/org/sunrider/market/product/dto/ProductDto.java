@@ -1,10 +1,12 @@
 package org.sunrider.market.product.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.Builder;
-import org.sunrider.market.product.entity.Category;
 
 @Builder
 @Schema(description = "Информация о продукте")
@@ -14,18 +16,25 @@ public record ProductDto (
     UUID id,
 
     @Schema(description = "Название продукта", example = "Iphone 13 PRO")
+    @NotBlank
     String name,
 
     @Schema(description = "Описание продукта", example = "Самый новый смартфон от Apple...")
+    @NotBlank
     String description,
 
     @Schema(description = "Цена продукта", example = "30000")
+    @NotNull
+    @Positive
     BigDecimal price,
 
     @Schema(description = "Количество на складе", example = "50")
+    @NotNull
+    @Positive
     Integer stockQuantity,
 
     @Schema(description = "Категория продукта", example = "Смартфон")
+    @NotNull
     CategoryDto category
 
 ) { }

@@ -17,4 +17,6 @@ public interface ProductMapper {
 
     CategoryDto categoryToCategoryDto(Category category);
 
+    List<CategoryDto> categoryToCategoryDtos(List<Category> categories);
+
 }
