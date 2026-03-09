@@ -1,9 +1,12 @@
 package org.sunrider.market.user.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.security.JwtService;
 import org.sunrider.market.user.dto.UserDto;
 import org.sunrider.market.user.entity.Role;
@@ -102,5 +106,43 @@ class UserControllerTest {
                 .with(user(adminUser)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].username").value("testuser"));
+    }
+
+    @Test
+    void blockUser_success() throws Exception {
+        User adminUser = User.builder()
+            .id(UUID.randomUUID())
+            .username("admin")
+            .email("admin@test.com")
+            .password("encoded")
+            .role(Role.ROLE_ADMIN)
+            .build();
+
+        doNothing().when(userService).blockUser(userId);
+
+        mockMvc.perform(delete("/api/v1/user/{id}", userId)
+                .with(user(adminUser))
+                .with(csrf()))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void blockUser_notFound() throws Exception {
+        User adminUser = User.builder()
+            .id(UUID.randomUUID())
+            .username("admin")
+            .email("admin@test.com")
+            .password("encoded")
+            .role(Role.ROLE_ADMIN)
+            .build();
+
+        UUID unknownId = UUID.randomUUID();
+        doThrow(new NotFoundException("Пользователь не найден"))
+            .when(userService).blockUser(unknownId);
+
+        mockMvc.perform(delete("/api/v1/user/{id}", unknownId)
+                .with(user(adminUser))
+                .with(csrf()))
+            .andExpect(status().isNotFound());
     }
 }

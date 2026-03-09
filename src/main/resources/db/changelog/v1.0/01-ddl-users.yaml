@@ -47,3 +47,10 @@ databaseChangeLog:
                   defaultValue: user
                   constraints:
                     nullable: false
+
+              - column:
+                  name: is_blocked
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

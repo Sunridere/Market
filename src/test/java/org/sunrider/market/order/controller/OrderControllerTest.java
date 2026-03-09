@@ -75,7 +75,7 @@ class OrderControllerTest {
     void createOrder_success() throws Exception {
         when(orderService.createOrder(any(User.class))).thenReturn(orderDto);
 
-        mockMvc.perform(post("/api/v1/order")
+        mockMvc.perform(post("/api/v1/orders")
                 .with(user(testUser))
                 .with(csrf()))
             .andExpect(status().isOk())
@@ -88,7 +88,7 @@ class OrderControllerTest {
         when(orderService.createOrder(any(User.class)))
             .thenThrow(new BadRequestException("Корзина пустая"));
 
-        mockMvc.perform(post("/api/v1/order")
+        mockMvc.perform(post("/api/v1/orders")
                 .with(user(testUser))
                 .with(csrf()))
             .andExpect(status().isBadRequest());
@@ -98,7 +98,7 @@ class OrderControllerTest {
     void getOrders_success() throws Exception {
         when(orderService.getOrder(userId)).thenReturn(List.of(orderDto));
 
-        mockMvc.perform(get("/api/v1/order")
+        mockMvc.perform(get("/api/v1/orders")
                 .with(user(testUser)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].status").value("CREATED"));
@@ -109,7 +109,7 @@ class OrderControllerTest {
         when(orderService.getOrder(userId))
             .thenThrow(new NotFoundException("У пользователя нет заказов."));
 
-        mockMvc.perform(get("/api/v1/order")
+        mockMvc.perform(get("/api/v1/orders")
                 .with(user(testUser)))
             .andExpect(status().isNotFound());
     }
@@ -118,7 +118,7 @@ class OrderControllerTest {
     void getOrderById_success() throws Exception {
         when(orderService.getOrder(userId, orderId)).thenReturn(orderDto);
 
-        mockMvc.perform(get("/api/v1/order/{orderId}", orderId)
+        mockMvc.perform(get("/api/v1/orders/{orderId}", orderId)
                 .with(user(testUser)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(orderId.toString()));
@@ -129,7 +129,7 @@ class OrderControllerTest {
         when(orderService.getOrder(eq(userId), any(UUID.class)))
             .thenThrow(new NotFoundException("Заказ не найден"));
 
-        mockMvc.perform(get("/api/v1/order/{orderId}", UUID.randomUUID())
+        mockMvc.perform(get("/api/v1/orders/{orderId}", UUID.randomUUID())
                 .with(user(testUser)))
             .andExpect(status().isNotFound());
     }

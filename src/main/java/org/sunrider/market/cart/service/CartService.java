@@ -44,7 +44,7 @@ public class CartService {
                 .items(new ArrayList<>())
                 .build());
 
-        Product product = productRepository.findById(request.productId())
+        Product product = productRepository.findByIdAndDeletedFalse(request.productId())
             .orElseThrow(() -> new NotFoundException("Товар не найден"));
 
         cart.getItems().stream()

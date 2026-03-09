@@ -49,6 +49,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Builder.Default
+    private Boolean isBlocked = false;
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -56,7 +59,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !Boolean.TRUE.equals(isBlocked);
     }
 
     @Override

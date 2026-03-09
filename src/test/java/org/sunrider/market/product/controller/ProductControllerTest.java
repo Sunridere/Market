@@ -1,14 +1,19 @@
 package org.sunrider.market.product.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +58,7 @@ class ProductControllerTest {
         productId = UUID.randomUUID();
         CategoryDto categoryDto = new CategoryDto(UUID.randomUUID(), "Электроника");
         productDto = new ProductDto(productId, "Iphone 13", "Смартфон Apple",
-            BigDecimal.valueOf(30000), 50, categoryDto);
+            BigDecimal.valueOf(30000), 50, categoryDto, Collections.emptyList());
     }
 
     @Test
@@ -94,5 +99,34 @@ class ProductControllerTest {
                 .content(objectMapper.writeValueAsString(productDto)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("Iphone 13"));
+    }
+
+    @Test
+    void updateProduct_success() throws Exception {
+        when(productService.updateProduct(any(ProductDto.class))).thenReturn(productDto);
+
+        mockMvc.perform(put("/api/v1/products")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(productDto)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Iphone 13"));
+    }
+
+    @Test
+    void deleteProduct_success() throws Exception {
+        doNothing().when(productService).deleteProduct(productId);
+
+        mockMvc.perform(delete("/api/v1/products/{id}", productId))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteProduct_notFound() throws Exception {
+        UUID unknownId = UUID.randomUUID();
+        doThrow(new NotFoundException("Нет товара с ID: " + unknownId))
+            .when(productService).deleteProduct(unknownId);
+
+        mockMvc.perform(delete("/api/v1/products/{id}", unknownId))
+            .andExpect(status().isNotFound());
     }
 }

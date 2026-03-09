@@ -5,8 +5,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.sunrider.market.product.dto.CategoryDto;
 import org.sunrider.market.product.dto.ProductDto;
+import org.sunrider.market.product.dto.ProductImageDto;
 import org.sunrider.market.product.entity.Category;
 import org.sunrider.market.product.entity.Product;
+import org.sunrider.market.product.entity.ProductImage;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
@@ -18,5 +20,9 @@ public interface ProductMapper {
     CategoryDto categoryToCategoryDto(Category category);
 
     List<CategoryDto> categoryToCategoryDtos(List<Category> categories);
+
+    ProductImageDto productImageToProductImageDto(ProductImage productImage);
+
+    List<ProductImageDto> productImagesToProductImageDtos(List<ProductImage> productImages);
 
 }

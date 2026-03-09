@@ -3,10 +3,13 @@ package org.sunrider.market.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,5 +45,12 @@ public class UserController {
     @GetMapping()
     public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @Operation(summary = "Блокировка пользователя (Только для Админа)")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public void blockUser(@PathVariable UUID id) {
+        userService.blockUser(id);
     }
 }

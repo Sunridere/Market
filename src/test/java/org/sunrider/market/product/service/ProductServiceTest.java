@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.product.dto.CategoryDto;
 import org.sunrider.market.product.dto.ProductDto;
+import org.sunrider.market.product.dto.ProductImageDto;
 import org.sunrider.market.product.entity.Category;
 import org.sunrider.market.product.entity.Product;
 import org.sunrider.market.product.mapper.ProductMapper;
@@ -68,7 +70,7 @@ class ProductServiceTest {
             .build();
 
         productDto = new ProductDto(productId, "Iphone 13", "Смартфон Apple",
-            BigDecimal.valueOf(30000), 50, categoryDto);
+            BigDecimal.valueOf(30000), 50, categoryDto, Collections.emptyList());
     }
 
     @Test
@@ -76,7 +78,7 @@ class ProductServiceTest {
         List<Product> products = List.of(product);
         List<ProductDto> dtos = List.of(productDto);
 
-        when(productRepository.findAllBy()).thenReturn(products);
+        when(productRepository.findAllByDeletedFalse()).thenReturn(products);
         when(productMapper.productsToProductDtos(products)).thenReturn(dtos);
 
         List<ProductDto> result = productService.getProducts();
@@ -91,7 +93,7 @@ class ProductServiceTest {
         List<Product> products = List.of(product);
         List<ProductDto> dtos = List.of(productDto);
 
-        when(productRepository.findAllById(ids)).thenReturn(products);
+        when(productRepository.findAllByIdInAndDeletedFalse(ids)).thenReturn(products);
         when(productMapper.productsToProductDtos(products)).thenReturn(dtos);
 
         List<ProductDto> result = productService.getProducts(ids);
@@ -101,7 +103,7 @@ class ProductServiceTest {
 
     @Test
     void getProductById_success() {
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
         when(productMapper.productToProductDto(product)).thenReturn(productDto);
 
         ProductDto result = productService.getProductById(productId);
@@ -112,7 +114,7 @@ class ProductServiceTest {
     @Test
     void getProductById_notFound_throws() {
         UUID unknownId = UUID.randomUUID();
-        when(productRepository.findById(unknownId)).thenReturn(Optional.empty());
+        when(productRepository.findByIdAndDeletedFalse(unknownId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> productService.getProductById(unknownId))
             .isInstanceOf(NotFoundException.class)
@@ -128,6 +130,56 @@ class ProductServiceTest {
         ProductDto result = productService.createProduct(productDto);
 
         assertThat(result.name()).isEqualTo("Iphone 13");
+        verify(productRepository).save(any(Product.class));
+    }
+
+    @Test
+    void updateProduct_success() {
+        when(categoryService.findCategoryByName("Электроника")).thenReturn(category);
+        when(productRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+        when(productMapper.productToProductDto(product)).thenReturn(productDto);
+
+        ProductDto result = productService.updateProduct(productDto);
+
+        assertThat(result.name()).isEqualTo("Iphone 13");
+        verify(productRepository).save(any(Product.class));
+    }
+
+    @Test
+    void deleteProduct_success() {
+        when(productRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+
+        productService.deleteProduct(productId);
+
+        assertThat(product.getDeleted()).isTrue();
+        verify(productRepository).save(product);
+    }
+
+    @Test
+    void deleteProduct_notFound_throws() {
+        UUID unknownId = UUID.randomUUID();
+        when(productRepository.findByIdAndDeletedFalse(unknownId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> productService.deleteProduct(unknownId))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("Нет товара с ID");
+    }
+
+    @Test
+    void createProduct_withImages_success() {
+        ProductImageDto imageDto = new ProductImageDto(null, "https://example.com/img.jpg", true);
+        ProductDto dtoWithImages = new ProductDto(productId, "Iphone 13", "Смартфон Apple",
+            BigDecimal.valueOf(30000), 50, categoryDto, List.of(imageDto));
+
+        when(categoryService.findCategoryByName("Электроника")).thenReturn(category);
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+        when(productMapper.productToProductDto(product)).thenReturn(dtoWithImages);
+
+        ProductDto result = productService.createProduct(dtoWithImages);
+
+        assertThat(result.images()).hasSize(1);
         verify(productRepository).save(any(Product.class));
     }
 }

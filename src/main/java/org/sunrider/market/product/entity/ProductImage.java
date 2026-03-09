@@ -1,6 +1,5 @@
 package org.sunrider.market.product.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,11 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,31 +21,19 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "products")
-public class Product {
+@Table(name = "product_images")
+public class ProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(length = 2000)
-    private String description;
-
-    @Column(nullable = false)
-    private BigDecimal price;
-
-    private Integer stockQuantity;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    private Category category;
+    private Product product;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ProductImage> images = new ArrayList<>();
+    @Column(nullable = false, length = 500)
+    private String imageUrl;
 
     @Builder.Default
-    private Boolean deleted = false;
+    private Boolean isMain = false;
 }

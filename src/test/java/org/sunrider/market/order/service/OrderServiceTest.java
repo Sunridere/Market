@@ -84,7 +84,7 @@ class OrderServiceTest {
         CartDto cartDto = new CartDto(UUID.randomUUID(), new ArrayList<>(List.of(cartItemDto)), BigDecimal.valueOf(60000));
 
         ProductDto productDto = new ProductDto(productId, "Iphone 13", "Описание",
-            BigDecimal.valueOf(30000), 50, categoryDto);
+            BigDecimal.valueOf(30000), 50, categoryDto, null);
 
         OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED,
             List.of(new OrderItemDto(UUID.randomUUID(), productId, "Iphone 13",
@@ -141,7 +141,7 @@ class OrderServiceTest {
         CartDto cartDto = new CartDto(UUID.randomUUID(), List.of(cartItemDto), BigDecimal.valueOf(3000000));
 
         ProductDto productDto = new ProductDto(productId, "Iphone 13", "Описание",
-            BigDecimal.valueOf(30000), 5, categoryDto);
+            BigDecimal.valueOf(30000), 5, categoryDto, null);
 
         when(cartService.getCart(user)).thenReturn(cartDto);
         when(productService.getProducts(anySet())).thenReturn(List.of(productDto));

@@ -163,4 +163,25 @@ class UserServiceTest {
     void userDetailsService_returnsService() {
         assertThat(userService.userDetailsService()).isNotNull();
     }
+
+    @Test
+    void blockUser_success() {
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        userService.blockUser(userId);
+
+        assertThat(user.getIsBlocked()).isTrue();
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void blockUser_notFound_throws() {
+        UUID unknownId = UUID.randomUUID();
+        when(userRepository.findById(unknownId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.blockUser(unknownId))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessage("Пользователь не найден");
+    }
 }

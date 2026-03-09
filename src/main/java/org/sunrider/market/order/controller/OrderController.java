@@ -18,7 +18,7 @@ import org.sunrider.market.user.entity.User;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Сервис заказов")
-@RequestMapping("/api/v1/order")
+@RequestMapping("/api/v1/orders")
 public class OrderController {
 
     private final OrderService orderService;

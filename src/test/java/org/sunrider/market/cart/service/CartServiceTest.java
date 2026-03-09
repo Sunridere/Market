@@ -112,7 +112,7 @@ class CartServiceTest {
         ItemRequestDto request = new ItemRequestDto(productId, 2);
 
         when(cartRepository.findByUserId(userId)).thenReturn(Optional.of(cart));
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
         when(cartRepository.save(any(Cart.class))).thenReturn(cart);
         when(cartMapper.cartToCartDto(any(Cart.class))).thenReturn(cartDto);
 
@@ -127,7 +127,7 @@ class CartServiceTest {
         ItemRequestDto request = new ItemRequestDto(productId, 2);
 
         when(cartRepository.findByUserId(userId)).thenReturn(Optional.of(cart));
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+        when(productRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> cartService.addItem(user, request))
             .isInstanceOf(NotFoundException.class)
@@ -147,7 +147,7 @@ class CartServiceTest {
         ItemRequestDto request = new ItemRequestDto(productId, 2);
 
         when(cartRepository.findByUserId(userId)).thenReturn(Optional.of(cart));
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
 
         assertThatThrownBy(() -> cartService.addItem(user, request))
             .isInstanceOf(ItemAlreadyInCartException.class)
@@ -159,7 +159,7 @@ class CartServiceTest {
         ItemRequestDto request = new ItemRequestDto(productId, 2);
 
         when(cartRepository.findByUserId(userId)).thenReturn(Optional.empty());
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdAndDeletedFalse(productId)).thenReturn(Optional.of(product));
         when(cartRepository.save(any(Cart.class))).thenReturn(cart);
         when(cartMapper.cartToCartDto(any(Cart.class))).thenReturn(cartDto);
 

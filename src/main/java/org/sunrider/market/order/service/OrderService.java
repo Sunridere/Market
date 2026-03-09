@@ -1,6 +1,5 @@
 package org.sunrider.market.order.service;
 
-import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.sunrider.market.cart.dto.CartDto;
 import org.sunrider.market.cart.dto.CartItemDto;
 import org.sunrider.market.cart.service.CartService;
@@ -95,16 +95,17 @@ public class OrderService {
                     .priceAtPurchase(product.getPrice())
                     .build());
         }
-        cart.items().clear();
         cartService.clearCart(user);
         return orderMapper.toDto(orderRepository.save(order));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderDto> getOrder(UUID userID) {
         return orderMapper.toDto(orderRepository.findByUserId(userID)
             .orElseThrow(() -> new NotFoundException("У пользователя нет заказов.")));
     }
 
+    @Transactional(readOnly = true)
     public OrderDto getOrder(UUID userID, UUID orderID) {
         Order order = orderRepository.findById(orderID)
             .orElseThrow(() -> new NotFoundException("Заказ не найден"));

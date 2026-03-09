@@ -3,6 +3,7 @@ package org.sunrider.market.product.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.product.dto.CategoryDto;
 import org.sunrider.market.product.entity.Category;
@@ -26,6 +27,7 @@ public class CategoryService {
             .build()));
     }
 
+    @Transactional(readOnly = true)
     public Category findCategoryByName(String name) {
         return categoryRepository.findByName(name)
             .orElseThrow(() -> new NotFoundException("Такой категории не существует"));
