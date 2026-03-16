@@ -72,7 +72,8 @@ class OrderControllerTest {
             UUID.randomUUID(), productId, "Iphone 13",
             2, BigDecimal.valueOf(30000), BigDecimal.valueOf(60000));
         orderDto = new OrderDto(orderId, OrderStatus.CREATED,
-            List.of(orderItemDto), BigDecimal.valueOf(60000), LocalDateTime.now(), LocalDateTime.now());
+            List.of(orderItemDto), BigDecimal.valueOf(60000), LocalDateTime.now(), LocalDateTime.now(),
+            "Город Калининград...");
     }
 
     @Test

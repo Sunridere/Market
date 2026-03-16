@@ -22,6 +22,10 @@ databaseChangeLog:
                   type: varchar(50)
 
               - column:
+                  name: delivery_address
+                  type: varchar(200)
+
+              - column:
                   name: created_at
                   type: timestamp
                   constraints:

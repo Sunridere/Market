@@ -1,6 +1,7 @@
 package org.sunrider.market.order.entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -43,4 +44,5 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
 
+    private String deliveryAddress;
 }

@@ -28,6 +28,9 @@ public record OrderDto(
     LocalDateTime createdAt,
 
     @Schema(description = "Дата обновления заказа", example = "2025-07-10T14:25:30.123456")
-    LocalDateTime updatedAt
+    LocalDateTime updatedAt,
+
+    @Schema(description = "Адрес доставки", example = "Город Калининград улица Комсомольская дом 2 квартира 10")
+    String deliveryAddress
 
 ) {}

@@ -102,7 +102,7 @@ class OrderServiceTest {
         OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED,
             List.of(new OrderItemDto(UUID.randomUUID(), productId, "Iphone 13",
                 2, BigDecimal.valueOf(30000), BigDecimal.valueOf(60000))),
-            BigDecimal.valueOf(60000), LocalDateTime.now(), LocalDateTime.now());
+            BigDecimal.valueOf(60000), LocalDateTime.now(), LocalDateTime.now(), "Город Калининград...");
 
         when(cartService.getCart(user)).thenReturn(cartDto);
         when(productService.getProducts(anySet())).thenReturn(List.of(productDto));
@@ -175,7 +175,8 @@ class OrderServiceTest {
             .items(new ArrayList<>())
             .build();
 
-        OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED, List.of(), BigDecimal.ZERO, LocalDateTime.now(), LocalDateTime.now());
+        OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED, List.of(), BigDecimal.ZERO,
+            LocalDateTime.now(), LocalDateTime.now(), "Город Калининград...");
 
         when(orderRepository.findByUserId(userId, pageable)).thenReturn(new PageImpl<>(Collections.singletonList(order)));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
@@ -196,7 +197,7 @@ class OrderServiceTest {
             .build();
 
         OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED, List.of(),
-            BigDecimal.ZERO, LocalDateTime.now(), LocalDateTime.now());
+            BigDecimal.ZERO, LocalDateTime.now(), LocalDateTime.now(), "Город Калининград...");
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
