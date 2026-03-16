@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +66,8 @@ class UserControllerTest {
             .role(Role.ROLE_USER)
             .build();
 
-        userDto = new UserDto(userId, "testuser", "test@test.com", "Test", "User");
+        userDto = new UserDto(userId, "testuser", "test@test.com", "Test", "User",
+            LocalDateTime.now(), LocalDateTime.now());
     }
 
     @Test
@@ -81,7 +83,8 @@ class UserControllerTest {
 
     @Test
     void updateCurrentUser_success() throws Exception {
-        UserDto updatedDto = new UserDto(userId, "testuser", "test@test.com", "Updated", "Name");
+        UserDto updatedDto = new UserDto(userId, "testuser", "test@test.com", "Updated", "Name",
+            LocalDateTime.now(), LocalDateTime.now());
         when(userService.updateUser(any(User.class), any(UserDto.class))).thenReturn(updatedDto);
 
         mockMvc.perform(put("/api/v1/user/me")

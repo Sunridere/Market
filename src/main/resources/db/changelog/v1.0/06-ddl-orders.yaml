@@ -21,6 +21,20 @@ databaseChangeLog:
                   name: status
                   type: varchar(50)
 
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: now()
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: now()
+
         - addForeignKeyConstraint:
             baseTableName: orders
             baseColumnNames: user_id

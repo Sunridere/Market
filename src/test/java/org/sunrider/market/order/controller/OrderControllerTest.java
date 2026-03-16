@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -71,7 +72,7 @@ class OrderControllerTest {
             UUID.randomUUID(), productId, "Iphone 13",
             2, BigDecimal.valueOf(30000), BigDecimal.valueOf(60000));
         orderDto = new OrderDto(orderId, OrderStatus.CREATED,
-            List.of(orderItemDto), BigDecimal.valueOf(60000));
+            List.of(orderItemDto), BigDecimal.valueOf(60000), LocalDateTime.now(), LocalDateTime.now());
     }
 
     @Test

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record UserDto (
@@ -26,5 +27,11 @@ public record UserDto (
     String firstName,
 
     @Schema(description = "Фамилия пользователя", example = "Ribin")
-    String lastName
+    String lastName,
+
+    @Schema(description = "Дата создания пользователя", example = "2025-07-10T14:25:30.123456")
+    LocalDateTime createdAt,
+
+    @Schema(description = "Дата обновления пользователя", example = "2025-07-10T14:25:30.123456")
+    LocalDateTime updatedAt
 ){}

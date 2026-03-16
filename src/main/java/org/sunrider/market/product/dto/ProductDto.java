@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
@@ -39,6 +40,12 @@ public record ProductDto (
     CategoryDto category,
 
     @Schema(description = "Изображения продукта")
-    List<ProductImageDto> images
+    List<ProductImageDto> images,
+
+    @Schema(description = "Дата создания продукта", example = "2025-07-10T14:25:30.123456")
+    LocalDateTime createdAt,
+
+    @Schema(description = "Дата обновления продукта", example = "2025-07-10T14:25:30.123456")
+    LocalDateTime updatedAt
 
 ) { }

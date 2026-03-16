@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -96,12 +97,12 @@ class OrderServiceTest {
         CartDto cartDto = new CartDto(UUID.randomUUID(), new ArrayList<>(List.of(cartItemDto)), BigDecimal.valueOf(60000));
 
         ProductDto productDto = new ProductDto(productId, "Iphone 13", "Описание",
-            BigDecimal.valueOf(30000), 50, categoryDto, null);
+            BigDecimal.valueOf(30000), 50, categoryDto, null, LocalDateTime.now(), LocalDateTime.now());
 
         OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED,
             List.of(new OrderItemDto(UUID.randomUUID(), productId, "Iphone 13",
                 2, BigDecimal.valueOf(30000), BigDecimal.valueOf(60000))),
-            BigDecimal.valueOf(60000));
+            BigDecimal.valueOf(60000), LocalDateTime.now(), LocalDateTime.now());
 
         when(cartService.getCart(user)).thenReturn(cartDto);
         when(productService.getProducts(anySet())).thenReturn(List.of(productDto));
@@ -155,7 +156,7 @@ class OrderServiceTest {
         CartDto cartDto = new CartDto(UUID.randomUUID(), List.of(cartItemDto), BigDecimal.valueOf(3000000));
 
         ProductDto productDto = new ProductDto(productId, "Iphone 13", "Описание",
-            BigDecimal.valueOf(30000), 5, categoryDto, null);
+            BigDecimal.valueOf(30000), 5, categoryDto, null, LocalDateTime.now(), LocalDateTime.now());
 
         when(cartService.getCart(user)).thenReturn(cartDto);
         when(productService.getProducts(anySet())).thenReturn(List.of(productDto));
@@ -174,7 +175,7 @@ class OrderServiceTest {
             .items(new ArrayList<>())
             .build();
 
-        OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED, List.of(), BigDecimal.ZERO);
+        OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED, List.of(), BigDecimal.ZERO, LocalDateTime.now(), LocalDateTime.now());
 
         when(orderRepository.findByUserId(userId, pageable)).thenReturn(new PageImpl<>(Collections.singletonList(order)));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
@@ -194,7 +195,8 @@ class OrderServiceTest {
             .items(new ArrayList<>())
             .build();
 
-        OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED, List.of(), BigDecimal.ZERO);
+        OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED, List.of(),
+            BigDecimal.ZERO, LocalDateTime.now(), LocalDateTime.now());
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);

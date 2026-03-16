@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +59,7 @@ class ProductControllerTest {
         productId = UUID.randomUUID();
         CategoryDto categoryDto = new CategoryDto(UUID.randomUUID(), "Электроника");
         productDto = new ProductDto(productId, "Iphone 13", "Смартфон Apple",
-            BigDecimal.valueOf(30000), 50, categoryDto, Collections.emptyList());
+            BigDecimal.valueOf(30000), 50, categoryDto, Collections.emptyList(), LocalDateTime.now(), LocalDateTime.now());
     }
 
     @Test

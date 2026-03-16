@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +74,7 @@ class ProductServiceTest {
             .build();
 
         productDto = new ProductDto(productId, "Iphone 13", "Смартфон Apple",
-            BigDecimal.valueOf(30000), 50, categoryDto, Collections.emptyList());
+            BigDecimal.valueOf(30000), 50, categoryDto, Collections.emptyList(), LocalDateTime.now(), LocalDateTime.now());
     }
 
     @Test
@@ -173,7 +174,7 @@ class ProductServiceTest {
     void createProduct_withImages_success() {
         ProductImageDto imageDto = new ProductImageDto(null, "https://example.com/img.jpg", true);
         ProductDto dtoWithImages = new ProductDto(productId, "Iphone 13", "Смартфон Apple",
-            BigDecimal.valueOf(30000), 50, categoryDto, List.of(imageDto));
+            BigDecimal.valueOf(30000), 50, categoryDto, List.of(imageDto), LocalDateTime.now(), LocalDateTime.now());
 
         when(categoryService.findCategoryByName("Электроника")).thenReturn(category);
         when(productRepository.save(any(Product.class))).thenReturn(product);

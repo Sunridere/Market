@@ -19,6 +19,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.sunrider.market.common.entity.BaseEntity;
 
 @Entity
 @Setter
@@ -27,7 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

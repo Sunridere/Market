@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,6 +26,7 @@ import org.sunrider.market.user.service.UserService;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@EnableJpaAuditing
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;

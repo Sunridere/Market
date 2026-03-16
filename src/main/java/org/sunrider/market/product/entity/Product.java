@@ -19,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.sunrider.market.common.entity.BaseEntity;
 
 @Entity
 @Setter
@@ -27,7 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "products")
-public class Product {
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

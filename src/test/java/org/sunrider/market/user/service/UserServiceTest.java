@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -57,7 +58,8 @@ class UserServiceTest {
             .role(Role.ROLE_USER)
             .build();
 
-        userDto = new UserDto(userId, "testuser", "test@test.com", "Updated", "Name");
+        userDto = new UserDto(userId, "testuser", "test@test.com", "Updated",
+            "Name", LocalDateTime.now(), LocalDateTime.now());
     }
 
     @Test
@@ -75,7 +77,8 @@ class UserServiceTest {
 
     @Test
     void updateUser_wrongId_throwsBadRequest() {
-        UserDto wrongIdDto = new UserDto(UUID.randomUUID(), "testuser", "test@test.com", "Test", "User");
+        UserDto wrongIdDto = new UserDto(UUID.randomUUID(), "testuser", "test@test.com",
+            "Test", "User", LocalDateTime.now(), LocalDateTime.now());
 
         assertThatThrownBy(() -> userService.updateUser(user, wrongIdDto))
             .isInstanceOf(BadRequestException.class)

@@ -2,6 +2,7 @@ package org.sunrider.market.order.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
@@ -21,6 +22,12 @@ public record OrderDto(
     List<OrderItemDto> items,
 
     @Schema(description = "Общая цена заказа", example = "60000")
-    BigDecimal totalOrderPrice
+    BigDecimal totalOrderPrice,
+
+    @Schema(description = "Дата создания заказа", example = "2025-07-10T14:25:30.123456")
+    LocalDateTime createdAt,
+
+    @Schema(description = "Дата обновления заказа", example = "2025-07-10T14:25:30.123456")
+    LocalDateTime updatedAt
 
 ) {}
