@@ -11,6 +11,7 @@ import org.sunrider.market.exception.BadRequestException;
 import org.sunrider.market.exception.InternalServerException;
 import org.sunrider.market.exception.ItemAlreadyInCartException;
 import org.sunrider.market.exception.NotFoundException;
+import org.sunrider.market.exception.TooManyRequestsException;
 import org.sunrider.market.exception.UnauthorizedException;
 import org.sunrider.market.exception.UserAlreadyExistsException;
 
@@ -73,6 +74,12 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler({UserAlreadyExistsException.class, ItemAlreadyInCartException.class})
     public ErrorResponseDto handleUserAlreadyExists(RuntimeException e) {
+        return new ErrorResponseDto(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    @ExceptionHandler(TooManyRequestsException.class)
+    public ErrorResponseDto handleTooManyRequests(RuntimeException e) {
         return new ErrorResponseDto(e.getMessage());
     }
 }

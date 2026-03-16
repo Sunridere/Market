@@ -59,7 +59,7 @@ class AuthControllerTest {
         SignInRequest request = new SignInRequest("testuser", "password123");
         JwtAuthenticationResponse response = new JwtAuthenticationResponse("jwt-token");
 
-        when(authenticationService.signIn(any(SignInRequest.class))).thenReturn(response);
+        when(authenticationService.signIn(any(SignInRequest.class), any(String.class))).thenReturn(response);
 
         mockMvc.perform(post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -2,6 +2,7 @@ package org.sunrider.market.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,19 @@ public class AuthController {
 
     @Operation(summary = "Авторизация пользователя")
     @PostMapping("/sign-in")
-    public JwtAuthenticationResponse signIn(@Valid @RequestBody SignInRequest signInRequest) {
-        return authenticationService.signIn(signInRequest);
+    public JwtAuthenticationResponse signIn(
+        @Valid @RequestBody SignInRequest signInRequest,
+        HttpServletRequest request
+    ) {
+        String ip = extractIp(request);
+        return authenticationService.signIn(signInRequest, ip);
+    }
+
+    private String extractIp(HttpServletRequest request) {
+        String forwarded = request.getHeader("X-Forwarded-For");
+        if (forwarded != null && !forwarded.isBlank()) {
+            return forwarded.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

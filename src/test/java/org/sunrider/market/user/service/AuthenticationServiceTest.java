@@ -3,6 +3,7 @@ package org.sunrider.market.user.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.sunrider.market.security.JwtService;
+import org.sunrider.market.security.LoginRateLimiterService;
 import org.sunrider.market.user.dto.JwtAuthenticationResponse;
 import org.sunrider.market.user.dto.SignInRequest;
 import org.sunrider.market.user.dto.SignUpRequest;
@@ -37,6 +39,9 @@ class AuthenticationServiceTest {
 
     @Mock
     private AuthenticationManager authenticationManager;
+
+    @Mock
+    private LoginRateLimiterService loginRateLimiterService;
 
     @InjectMocks
     private AuthenticationService authenticationService;
@@ -77,8 +82,9 @@ class AuthenticationServiceTest {
         UserDetailsService userDetailsService = username -> user;
         when(userService.userDetailsService()).thenReturn(userDetailsService);
         when(jwtService.generateToken(any(UserDetails.class))).thenReturn("jwt-token");
+        doNothing().when(loginRateLimiterService).checkLimit(any(String.class));
 
-        JwtAuthenticationResponse response = authenticationService.signIn(request);
+        JwtAuthenticationResponse response = authenticationService.signIn(request, "192.168.1.1");
 
         assertThat(response.token()).isEqualTo("jwt-token");
         verify(authenticationManager).authenticate(any());
