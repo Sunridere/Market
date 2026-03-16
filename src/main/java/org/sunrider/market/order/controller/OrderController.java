@@ -5,11 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.sunrider.market.order.dto.OrderDto;
 import org.sunrider.market.order.service.OrderService;
@@ -31,8 +33,11 @@ public class OrderController {
 
     @Operation(summary = "Получение списка заказов пользователя")
     @GetMapping
-    public List<OrderDto> getOrder(@AuthenticationPrincipal User user) {
-        return orderService.getOrder(user.getId());
+    public Page<OrderDto> getOrder(
+        @AuthenticationPrincipal User user,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+        return orderService.getOrder(user.getId(), page, size);
     }
 
     @Operation(summary = "Получение информации по заказу")

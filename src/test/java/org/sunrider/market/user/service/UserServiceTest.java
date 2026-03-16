@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.sunrider.market.exception.BadRequestException;
 import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.exception.UserAlreadyExistsException;
@@ -39,6 +42,7 @@ class UserServiceTest {
     private User user;
     private UserDto userDto;
     private UUID userId;
+    private int page = 0, size = 10;
 
     @BeforeEach
     void setUp() {
@@ -148,15 +152,14 @@ class UserServiceTest {
 
     @Test
     void getAllUsers_success() {
-        List<User> users = List.of(user);
-        List<UserDto> dtos = List.of(userDto);
-        when(userRepository.findAll()).thenReturn(users);
-        when(userMapper.toDtos(users)).thenReturn(dtos);
+        Page<User> users = new PageImpl<>(Collections.singletonList(user));
+        when(userRepository.findAll(PageRequest.of(page, size))).thenReturn(users);
+        when(userMapper.toDto(user)).thenReturn(userDto);
 
-        List<UserDto> result = userService.getAllUsers();
+        Page<UserDto> result = userService.getAllUsers(page, size);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0)).isEqualTo(userDto);
+        assertThat(result.getContent().get(0)).isEqualTo(userDto);
     }
 
     @Test

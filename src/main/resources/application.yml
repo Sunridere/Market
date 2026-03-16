@@ -23,5 +23,11 @@ spring:
 
 
 token:
+  expirationInMs: ${JWT_EXPIRATION}
   signing:
     key: ${JWT_SECRET}
+
+app:
+  upload-dir: uploads
+  cors:
+    allowed-origin: ${CORS_ORIGIN:http://localhost:5173}

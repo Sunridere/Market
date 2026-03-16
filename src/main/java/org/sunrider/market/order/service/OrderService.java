@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.sunrider.market.cart.dto.CartDto;
@@ -24,6 +27,7 @@ import org.sunrider.market.order.repository.OrderRepository;
 import org.sunrider.market.product.dto.ProductDto;
 import org.sunrider.market.product.entity.Category;
 import org.sunrider.market.product.entity.Product;
+import org.sunrider.market.product.mapper.ProductMapper;
 import org.sunrider.market.product.service.ProductService;
 import org.sunrider.market.user.entity.User;
 
@@ -35,6 +39,7 @@ public class OrderService {
     private final ProductService productService;
     private final CartService cartService;
     private final OrderMapper orderMapper;
+    private final ProductMapper productMapper;
 
     @Transactional
     public OrderDto createOrder(User user) {
@@ -96,13 +101,21 @@ public class OrderService {
                     .build());
         }
         cartService.clearCart(user);
+
+        for (OrderItem orderItem : order.getItems()) {
+            productService.updateProduct(productMapper.productToProductDto(orderItem.getProduct()));
+        }
+
         return orderMapper.toDto(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)
-    public List<OrderDto> getOrder(UUID userID) {
-        return orderMapper.toDto(orderRepository.findByUserId(userID)
-            .orElseThrow(() -> new NotFoundException("У пользователя нет заказов.")));
+    public Page<OrderDto> getOrder(UUID userID, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Order> orders = orderRepository.findByUserId(userID, pageable);
+        return orders.map(orderMapper::toDto);
     }
 
     @Transactional(readOnly = true)

@@ -1,8 +1,10 @@
 package org.sunrider.market.user.service;
 
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +12,6 @@ import org.sunrider.market.exception.BadRequestException;
 import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.exception.UserAlreadyExistsException;
 import org.sunrider.market.user.dto.UserDto;
-import org.sunrider.market.user.entity.Role;
 import org.sunrider.market.user.entity.User;
 import org.sunrider.market.user.mapper.UserMapper;
 import org.sunrider.market.user.repository.UserRepository;
@@ -66,8 +67,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserDto> getAllUsers() {
-        return userMapper.toDtos(userRepository.findAll());
+    public Page<UserDto> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable).map(userMapper::toDto);
     }
 
     @Transactional

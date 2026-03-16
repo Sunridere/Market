@@ -8,18 +8,20 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
+import java.util.Collections;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.sunrider.market.exception.NotFoundException;
@@ -47,6 +49,8 @@ class UserControllerTest {
     private User testUser;
     private UserDto userDto;
     private UUID userId;
+    private int page = 0;
+    private int size = 10;
 
     @BeforeEach
     void setUp() {
@@ -100,12 +104,12 @@ class UserControllerTest {
             .role(Role.ROLE_ADMIN)
             .build();
 
-        when(userService.getAllUsers()).thenReturn(List.of(userDto));
+        when(userService.getAllUsers(page, size)).thenReturn(new PageImpl<>(Collections.singletonList(userDto)));
 
         mockMvc.perform(get("/api/v1/user")
                 .with(user(adminUser)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].username").value("testuser"));
+            .andExpect(jsonPath("$.content[0].username").value("testuser"));
     }
 
     @Test
@@ -120,7 +124,7 @@ class UserControllerTest {
 
         doNothing().when(userService).blockUser(userId);
 
-        mockMvc.perform(delete("/api/v1/user/{id}", userId)
+        mockMvc.perform(patch("/api/v1/user/block/{id}", userId)
                 .with(user(adminUser))
                 .with(csrf()))
             .andExpect(status().isOk());

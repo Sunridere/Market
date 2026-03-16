@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.sunrider.market.product.dto.ProductDto;
 import org.sunrider.market.product.service.ProductService;
@@ -27,8 +31,11 @@ public class ProductController {
 
     @Operation(summary = "Получение списка товаров")
     @GetMapping()
-    public List<ProductDto> getProducts() {
-        return productService.getProducts();
+    public Page<ProductDto> getProducts(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        return productService.getProducts(page, size);
     }
 
     @Operation(summary = "Получение товара по ID")

@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.sunrider.market.exception.NotFoundException;
@@ -63,12 +63,12 @@ class ProductControllerTest {
 
     @Test
     void getProducts_success() throws Exception {
-        when(productService.getProducts()).thenReturn(List.of(productDto));
+        when(productService.getProducts(0,10)).thenReturn(new PageImpl<>(Collections.singletonList(productDto)));
 
         mockMvc.perform(get("/api/v1/products"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].name").value("Iphone 13"))
-            .andExpect(jsonPath("$[0].price").value(30000));
+            .andExpect(jsonPath("$.content[0].name").value("Iphone 13"))
+            .andExpect(jsonPath("$.content[0].price").value(30000));
     }
 
     @Test

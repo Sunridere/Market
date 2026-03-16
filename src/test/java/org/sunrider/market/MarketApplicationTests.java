@@ -13,7 +13,8 @@ import org.springframework.test.context.TestPropertySource;
     "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
     "spring.liquibase.enabled=false",
     "spring.sql.init.mode=never",
-    "token.signing.key=testSecretKeyForTestingPurposesOnly1234567890"
+    "token.signing.key=testSecretKeyForTestingPurposesOnly1234567890",
+    "token.expirationInMs=900000"
 })
 class MarketApplicationTests {
 

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.sunrider.market.cart.dto.CartDto;
 import org.sunrider.market.cart.dto.CartItemDto;
 import org.sunrider.market.cart.service.CartService;
@@ -31,6 +36,7 @@ import org.sunrider.market.order.mapper.OrderMapper;
 import org.sunrider.market.order.repository.OrderRepository;
 import org.sunrider.market.product.dto.CategoryDto;
 import org.sunrider.market.product.dto.ProductDto;
+import org.sunrider.market.product.mapper.ProductMapper;
 import org.sunrider.market.product.service.ProductService;
 import org.sunrider.market.user.entity.Role;
 import org.sunrider.market.user.entity.User;
@@ -50,6 +56,9 @@ class OrderServiceTest {
     @Mock
     private OrderMapper orderMapper;
 
+    @Mock
+    private ProductMapper productMapper;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -58,6 +67,8 @@ class OrderServiceTest {
     private UUID productId;
     private UUID orderId;
     private CategoryDto categoryDto;
+    private Pageable pageable;
+    private int page = 0, size = 10;
 
     @BeforeEach
     void setUp() {
@@ -74,6 +85,7 @@ class OrderServiceTest {
             .build();
 
         categoryDto = new CategoryDto(UUID.randomUUID(), "Электроника");
+        pageable = PageRequest.of(page, size);
     }
 
     @Test
@@ -93,6 +105,8 @@ class OrderServiceTest {
 
         when(cartService.getCart(user)).thenReturn(cartDto);
         when(productService.getProducts(anySet())).thenReturn(List.of(productDto));
+        when(productService.updateProduct(any())).thenReturn(productDto);
+        when(productMapper.productToProductDto(any())).thenReturn(productDto);
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
             Order order = invocation.getArgument(0);
             order.setId(orderId);
@@ -162,22 +176,13 @@ class OrderServiceTest {
 
         OrderDto orderDto = new OrderDto(orderId, OrderStatus.CREATED, List.of(), BigDecimal.ZERO);
 
-        when(orderRepository.findByUserId(userId)).thenReturn(Optional.of(List.of(order)));
-        when(orderMapper.toDto(List.of(order))).thenReturn(List.of(orderDto));
+        when(orderRepository.findByUserId(userId, pageable)).thenReturn(new PageImpl<>(Collections.singletonList(order)));
+        when(orderMapper.toDto(order)).thenReturn(orderDto);
 
-        List<OrderDto> result = orderService.getOrder(userId);
+        Page<OrderDto> result = orderService.getOrder(userId, page, size);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).status()).isEqualTo(OrderStatus.CREATED);
-    }
-
-    @Test
-    void getOrder_byUserId_notFound_throws() {
-        when(orderRepository.findByUserId(userId)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> orderService.getOrder(userId))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessage("У пользователя нет заказов.");
+        assertThat(result.getContent().get(0).status()).isEqualTo(OrderStatus.CREATED);
     }
 
     @Test

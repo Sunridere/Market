@@ -18,6 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.product.dto.CategoryDto;
 import org.sunrider.market.product.dto.ProductDto;
@@ -75,16 +78,15 @@ class ProductServiceTest {
 
     @Test
     void getProducts_success() {
-        List<Product> products = List.of(product);
-        List<ProductDto> dtos = List.of(productDto);
+        Page<Product> products = new PageImpl<>(Collections.singletonList(product));
 
-        when(productRepository.findAllByDeletedFalse()).thenReturn(products);
-        when(productMapper.productsToProductDtos(products)).thenReturn(dtos);
+        when(productRepository.findAllByDeletedFalse(PageRequest.of(0, 10))).thenReturn(products);
+        when(productMapper.productToProductDto(product)).thenReturn(productDto);
 
-        List<ProductDto> result = productService.getProducts();
+        Page<ProductDto> result = productService.getProducts(0,10);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).name()).isEqualTo("Iphone 13");
+        assertThat(result.getContent().get(0).name()).isEqualTo("Iphone 13");
     }
 
     @Test
