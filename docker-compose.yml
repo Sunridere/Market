@@ -3,15 +3,20 @@ services:
     image: postgres:latest
     container_name: market-postgres
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: market-postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - market-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d market-postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build:
@@ -25,6 +30,26 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/market-postgres
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      - JWT_SECRET=${JWT_SECRET:-160cb622638816e483f9d176c2da814fa71f0cccf2b936d55f46e797c9d1f4d4}
+      - JWT_EXPIRATION=${JWT_EXPIRATION:-900000}
+      - CORS_ORIGIN=http://localhost
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - market-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: market-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
     networks:
       - market-net
 

@@ -7,7 +7,7 @@ spring:
       on-profile: docker
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/hakton-postgres}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/market-postgres}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -20,4 +20,14 @@ spring:
         format_sql: false
   liquibase:
     enabled: true
-    change-log: classpath:db.changelog/db.changelog-master.yml
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+token:
+  expirationInMs: ${JWT_EXPIRATION:900000}
+  signing:
+    key: ${JWT_SECRET}
+
+app:
+  upload-dir: /app/uploads
+  cors:
+    allowed-origin: ${CORS_ORIGIN:http://localhost}
