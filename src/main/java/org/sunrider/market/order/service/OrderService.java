@@ -81,29 +81,21 @@ public class OrderService {
                 throw new BadRequestException("На складе недостаточно продукта: " + productDto.name());
             }
 
-            Product product = Product.builder()
-                .id(productDto.id())
-                .name(productDto.name())
-                .description(productDto.description())
-                .price(productDto.price())
-                .stockQuantity(productDto.stockQuantity() - item.quantity())
-                .category(Category.builder()
-                    .id(productDto.category().id())
-                    .name(productDto.category().name())
-                    .build())
-                .build();
-
             order.getItems().add(OrderItem.builder()
                     .order(order)
-                    .product(product)
+                    .product(Product.builder()
+                        .id(productDto.id())
+                        .stockQuantity(productDto.stockQuantity() - item.quantity())
+                        .build())
                     .quantity(item.quantity())
-                    .priceAtPurchase(product.getPrice())
+                    .priceAtPurchase(productDto.price())
                     .build());
         }
         cartService.clearCart(user);
 
         for (OrderItem orderItem : order.getItems()) {
-            productService.updateProduct(productMapper.productToProductDto(orderItem.getProduct()));
+            productService.updateStockQuantity(orderItem.getProduct().getId(),
+                orderItem.getProduct().getStockQuantity());
         }
 
         return orderMapper.toDto(orderRepository.save(order));

@@ -104,4 +104,11 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public void updateStockQuantity(UUID id, int newStockQuantity) {
+        Product product = productRepository.findById(id).orElseThrow(() ->
+            new NotFoundException("Не найден продукт с ID: " + id));
+        product.setStockQuantity(newStockQuantity);
+        productRepository.save(product);
+    }
+
 }
