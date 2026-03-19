@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.sunrider.market.security.JwtService;
-import org.sunrider.market.security.LoginRateLimiterService;
+import org.sunrider.market.exception.BadRequestException;
+import org.sunrider.market.security.service.JwtService;
+import org.sunrider.market.security.service.LoginRateLimiterService;
+import org.sunrider.market.security.service.RefreshTokenService;
 import org.sunrider.market.user.dto.JwtAuthenticationResponse;
 import org.sunrider.market.user.dto.SignInRequest;
 import org.sunrider.market.user.dto.SignUpRequest;
@@ -23,10 +26,11 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final LoginRateLimiterService rateLimiterService;
+    private final RefreshTokenService refreshTokenService;
 
     public JwtAuthenticationResponse signUp(SignUpRequest signUpRequest ) {
 
-        var user = User.builder()
+        User user = User.builder()
             .username(signUpRequest.username())
             .password(passwordEncoder.encode(signUpRequest.password()))
             .email(signUpRequest.email())
@@ -37,9 +41,9 @@ public class AuthenticationService {
 
         userService.createUser(user);
 
-        var token = jwtService.generateToken(user);
-        return new JwtAuthenticationResponse(token);
-
+        String accessToken = jwtService.generateToken(user);
+        String refreshToken = refreshTokenService.createRefreshToken(user);
+        return new JwtAuthenticationResponse(accessToken, refreshToken);
     }
 
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest, String ip) {
@@ -57,13 +61,31 @@ public class AuthenticationService {
 
         rateLimiterService.recordSuccess(ip);
 
-        var user = userService
+        UserDetails userDetails = userService
             .userDetailsService()
             .loadUserByUsername(signInRequest.username());
 
-        var token = jwtService.generateToken(user);
-        return new JwtAuthenticationResponse(token);
+        String accessToken = jwtService.generateToken(userDetails);
+        String refreshToken;
+        if (userDetails instanceof User user) {
+            refreshToken = refreshTokenService.createRefreshToken(user);
+            return new JwtAuthenticationResponse(accessToken, refreshToken);
+        }
 
+        throw  new BadRequestException("Не удалось сгенерировать токены");
+    }
+
+    public JwtAuthenticationResponse refreshToken(String refreshToken) {
+        User user = refreshTokenService.getUserByToken(refreshToken);
+        refreshTokenService.revokeRefreshToken(refreshToken);
+        String accessToken = jwtService.generateToken(user);
+        refreshToken = refreshTokenService.createRefreshToken(user);
+        return new JwtAuthenticationResponse(accessToken, refreshToken);
+
+    }
+
+    public void logout(String refreshToken) {
+        refreshTokenService.revokeRefreshToken(refreshToken);
     }
 
 }

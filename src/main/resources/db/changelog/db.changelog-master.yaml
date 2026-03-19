@@ -15,3 +15,5 @@ databaseChangeLog:
       file: db/changelog/v1.0/07-ddl-order-items.yaml
   - include:
       file: db/changelog/v1.0/08-ddl-product-images.yaml
+  - include:
+      file: db/changelog/v1.0/09-ddl-refresh-tokens.yaml

@@ -28,7 +28,7 @@ import org.sunrider.market.order.dto.OrderDto;
 import org.sunrider.market.order.dto.OrderItemDto;
 import org.sunrider.market.order.entity.OrderStatus;
 import org.sunrider.market.order.service.OrderService;
-import org.sunrider.market.security.JwtService;
+import org.sunrider.market.security.service.JwtService;
 import org.sunrider.market.user.entity.Role;
 import org.sunrider.market.user.entity.User;
 import org.sunrider.market.user.service.UserService;

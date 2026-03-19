@@ -1,4 +1,4 @@
-package org.sunrider.market.security;
+package org.sunrider.market.security.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

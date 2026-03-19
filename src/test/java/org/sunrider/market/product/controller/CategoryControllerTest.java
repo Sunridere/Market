@@ -20,7 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.sunrider.market.product.dto.CategoryDto;
 import org.sunrider.market.product.service.CategoryService;
-import org.sunrider.market.security.JwtService;
+import org.sunrider.market.security.service.JwtService;
 import org.sunrider.market.user.service.UserService;
 
 @WebMvcTest(CategoryController.class)

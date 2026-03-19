@@ -26,7 +26,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.sunrider.market.exception.NotFoundException;
-import org.sunrider.market.security.JwtService;
+import org.sunrider.market.security.service.JwtService;
 import org.sunrider.market.user.dto.UserDto;
 import org.sunrider.market.user.entity.Role;
 import org.sunrider.market.user.entity.User;

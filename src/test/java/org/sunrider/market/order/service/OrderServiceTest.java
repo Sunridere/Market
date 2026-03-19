@@ -106,8 +106,6 @@ class OrderServiceTest {
 
         when(cartService.getCart(user)).thenReturn(cartDto);
         when(productService.getProducts(anySet())).thenReturn(List.of(productDto));
-        when(productService.updateProduct(any())).thenReturn(productDto);
-        when(productMapper.productToProductDto(any())).thenReturn(productDto);
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
             Order order = invocation.getArgument(0);
             order.setId(orderId);

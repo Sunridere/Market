@@ -8,8 +8,10 @@ import lombok.Builder;
 public record JwtAuthenticationResponse(
 
     @Schema(description = "Токен доступа", example = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYyMjUwNj...")
-    String token
+    String accessToken,
 
+    @Schema(description = "Токен обновления", example = "9a93aa31-7687-4763-9a87-e0b173f4f5a5")
+    String refreshToken
 ) {
 
 }

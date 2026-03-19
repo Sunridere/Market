@@ -29,7 +29,7 @@ import org.sunrider.market.exception.NotFoundException;
 import org.sunrider.market.product.dto.CategoryDto;
 import org.sunrider.market.product.dto.ProductDto;
 import org.sunrider.market.product.service.ProductService;
-import org.sunrider.market.security.JwtService;
+import org.sunrider.market.security.service.JwtService;
 import org.sunrider.market.user.service.UserService;
 
 @WebMvcTest(ProductController.class)

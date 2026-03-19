@@ -29,7 +29,7 @@ import org.sunrider.market.cart.dto.ItemRequestDto;
 import org.sunrider.market.cart.dto.UpdateQuantityRequestDto;
 import org.sunrider.market.cart.service.CartService;
 import org.sunrider.market.exception.NotFoundException;
-import org.sunrider.market.security.JwtService;
+import org.sunrider.market.security.service.JwtService;
 import org.sunrider.market.user.entity.Role;
 import org.sunrider.market.user.entity.User;
 import org.sunrider.market.user.service.UserService;
